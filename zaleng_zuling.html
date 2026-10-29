@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaleng Zuling - เรียกซาเล้งรับขยะ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col justify-between">
+
+    <div class="max-w-md mx-auto w-full bg-white min-h-screen shadow-lg flex flex-col justify-between relative">
+        
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-emerald-600 to-green-600 text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-recycle text-2xl text-emerald-200 animate-spin-slow"></i>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Zaleng Zuling</h1>
+                    <p class="text-[10px] text-emerald-100">เรียกซาเล้งรับขยะถึงบ้าน</p>
+                </div>
+            </div>
+            <div id="userInfoHeader" class="hidden text-right">
+                <span id="headerName" class="text-xs font-semibold bg-emerald-800/60 backdrop-blur-sm px-3 py-1 rounded-full border border-emerald-400/30">
+                    <i class="fa-solid fa-user text-emerald-200 mr-1"></i> <span id="displayName">ผู้ใช้งาน</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="p-4 flex-grow flex flex-col justify-between">
+
+            <!-- 1. Address Registration Screen ( First Visit ) -->
+            <div id="addressScreen" class="space-y-4 my-auto">
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
+                        <i class="fa-solid fa-house-chimney-user"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">ลงทะเบียนข้อมูลที่อยู่</h2>
+                    <p class="text-xs text-gray-500">ระบุข้อมูลของคุณเพื่อให้พี่ซาเล้งเดินทางมารับขยะได้ถูกต้อง</p>
+                </div>
+
+                <form onsubmit="saveAddress(event)" class="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">ชื่อ-นามสกุล / ชื่อร้านค้า <span class="text-red-500">*</span></label>
+                        <input type="text" id="inputName" required class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm" placeholder="เช่น คุณสมชาย ใจดี">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">เบอร์โทรศัพท์ติดต่อ <span class="text-red-500">*</span></label>
+                        <input type="tel" id="inputPhone" required pattern="[0-9]{9,10}" class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm" placeholder="เช่น 0812345678">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">ที่อยู่ / จุดสังเกต <span class="text-red-500">*</span></label>
+                        <textarea id="inputAddress" required class="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm" rows="3" placeholder="เช่น 123/45 ซอยสุขุมวิท 21 หน้าปากซอยมีร้านสะดวกซื้อ"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold shadow-md transition duration-200">
+                        เริ่มใช้งานระบบ <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 2. User Main Dashboard -->
+            <div id="userDashboard" class="hidden space-y-4">
+                
+                <!-- Points Card -->
+                <div class="bg-gradient-to-br from-emerald-500 to-teal-700 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-15 text-8xl">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div class="relative z-10 flex justify-between items-center">
+                        <div>
+                            <p class="text-xs text-emerald-100 font-light">แต้มสะสมทั้งหมดของคุณ</p>
+                            <p class="text-4xl font-extrabold mt-1 tracking-tight"><span id="userPoints">100</span> <span class="text-base font-normal text-emerald-200">แต้ม</span></p>
+                        </div>
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-amber-300 text-2xl shadow-inner">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="toggleSection('callSaleng')" id="btnCallSaleng" class="bg-emerald-50 border-2 border-emerald-500 text-emerald-700 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 active:scale-95 transition shadow-sm">
+                        <i class="fa-solid fa-bullhorn text-2xl text-emerald-600"></i>
+                        <span class="font-bold text-sm">เรียกซาเล้ง</span>
+                    </button>
+                    <button onclick="toggleSection('redeemStore')" id="btnRedeemStore" class="bg-amber-50 border-2 border-amber-200 text-amber-700 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-amber-100 active:scale-95 transition shadow-sm">
+                        <i class="fa-solid fa-store text-2xl text-amber-600"></i>
+                        <span class="font-bold text-sm">แลกของรางวัล</span>
+                    </button>
+                </div>
+
+                <!-- Section: เรียกซาเล้ง -->
+                <div id="callSaleng" class="border border-emerald-100 p-4 rounded-2xl bg-emerald-50/40 space-y-3 shadow-sm">
+                    <div class="flex items-center space-x-2 border-b border-emerald-100 pb-2">
+                        <i class="fa-solid fa-camera text-emerald-600"></i>
+                        <h3 class="font-bold text-gray-800 text-sm">แจ้งรับขยะ recycle</h3>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">ถ่ายรูปขยะหรืออัปโหลดรูปภาพ</label>
+                        <input type="file" id="wasteImage" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-100 file:text-emerald-700 hover:file:bg-emerald-200 border border-gray-200 rounded-lg p-1 bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">รายละเอียดขยะ / ปริมาณโดยประมาณ</label>
+                        <textarea id="wasteDesc" class="w-full p-2.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 outline-none bg-white" rows="3" placeholder="เช่น ขวดพลาสติกใส 2 ถุงใหญ่, ลังกระดาษลูกฟูก 5 ลัง"></textarea>
+                    </div>
+
+                    <button onclick="submitCall()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white py-2.5 rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>ส่งสัญญาณเรียกพี่ซาเล้ง</span>
+                    </button>
+                </div>
+
+                <!-- Section: ร้านค้าแลกของรางวัล -->
+                <div id="redeemStore" class="hidden border border-amber-100 p-4 rounded-2xl bg-amber-50/40 space-y-3 shadow-sm">
+                    <div class="flex items-center justify-between border-b border-amber-100 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-leaf text-amber-600"></i>
+                            <h3 class="font-bold text-gray-800 text-sm">รายการแลกของรางวัลรักโลก</h3>
+                        </div>
+                        <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">7 รายการ</span>
+                    </div>
+
+                    <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+                        <!-- 1. ถังแยกขยะโมดูลาร์มินิมอล -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">1. ถังแยกขยะโมดูลาร์มินิมอล</p>
+                                <p class="text-[10px] text-gray-500">ถังขยะต่อชั้นทรงสูง วางซ้อนประหยัดพื้นที่</p>
+                            </div>
+                            <button onclick="redeem('ถังแยกขยะโมดูลาร์มินิมอล', 800)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">800 แต้ม</button>
+                        </div>
+
+                        <!-- 2. กระเป๋า Upcycled 100% -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">2. กระเป๋า Upcycled 100%</p>
+                                <p class="text-[10px] text-gray-500">ทำจากฝาน้ำดื่มคัดแยก 45 ฝา</p>
+                            </div>
+                            <button onclick="redeem('กระเป๋า Upcycled 100%', 450)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">450 แต้ม</button>
+                        </div>
+
+                        <!-- 3. ถุงขยะย่อยสลายได้ทางชีวภาพ -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">3. ถุงขยะย่อยสลายได้ทางชีวภาพ</p>
+                                <p class="text-[10px] text-gray-500">ทำจากแป้งข้าวโพด แพ็ก 20 ใบ</p>
+                            </div>
+                            <button onclick="redeem('ถุงขยะย่อยสลายได้ทางชีวภาพ', 150)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">150 แต้ม</button>
+                        </div>
+
+                        <!-- 4. กล่องอาหารซิลิโคนพับได้ -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">4. กล่องอาหารซิลิโคนพับได้</p>
+                                <p class="text-[10px] text-gray-500">พกพาสะดวก ใส่อาหารแทนพลาสติก</p>
+                            </div>
+                            <button onclick="redeem('กล่องอาหารซิลิโคนพับได้', 250)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">250 แต้ม</button>
+                        </div>
+
+                        <!-- 5. เม็ดน้ำยาทำความสะอาดเข้มข้น -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">5. เม็ดน้ำยาทำความสะอาดเข้มข้น</p>
+                                <p class="text-[10px] text-gray-500">ชนิดก้อนละลายน้ำ ลดขยะขวดพลาสติก</p>
+                            </div>
+                            <button onclick="redeem('เม็ดน้ำยาทำความสะอาดเข้มข้น', 120)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">120 แต้ม</button>
+                        </div>
+
+                        <!-- 6. สมุด Eco-Tracker รีไซเคิล 100% -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">6. สมุด Eco-Tracker รีไซเคิล 100%</p>
+                                <p class="text-[10px] text-gray-500">จดสถิติการแยกขยะและคำนวณ Carbon</p>
+                            </div>
+                            <button onclick="redeem('สมุด Eco-Tracker รีไซเคิล 100%', 180)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">180 แต้ม</button>
+                        </div>
+
+                        <!-- 7. น้ำดื่มขวดพลาสติกรักโลก (rPET) -->
+                        <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <div class="space-y-0.5 pr-2">
+                                <p class="text-xs font-bold text-gray-800">7. น้ำดื่มขวดพลาสติกรักโลก (rPET)</p>
+                                <p class="text-[10px] text-gray-500">ขวดหมุนเวียนรีไซเคิลได้ 100% (แพ็ก 6 ขวด)</p>
+                            </div>
+                            <button onclick="redeem('น้ำดื่มขวดพลาสติกรักโลก (rPET)', 60)" class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition shadow-sm whitespace-nowrap">60 แต้ม</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request Status Tracker -->
+                <div class="border border-gray-200 p-4 rounded-2xl bg-white space-y-3 shadow-sm">
+                    <h3 class="font-bold text-gray-800 text-xs flex items-center">
+                        <i class="fa-solid fa-clock-rotate-left mr-1.5 text-emerald-600"></i> ประวัติการเรียกรับขยะล่าสุด
+                    </h3>
+                    <div id="myRequestsList" class="space-y-2 text-xs">
+                        <div class="text-center text-gray-400 py-3">ยังไม่มีประวัติการแจ้งเรียกซาเล้ง</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Footer Profile / Edit Address Button -->
+        <footer class="p-3 border-t bg-gray-50 text-center">
+            <button id="btnEditProfile" onclick="editProfile()" class="hidden text-xs text-gray-500 hover:text-emerald-600 font-medium transition">
+                <i class="fa-solid fa-pen-to-square mr-1"></i> แก้ไขข้อมูลที่อยู่ติดต่อ
+            </button>
+            <p class="text-[10px] text-gray-400 mt-1">Zaleng Zuling Platform © 2026</p>
+        </footer>
+
+    </div>
+
+    <!-- Notification Toast Modal -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs flex items-center space-x-2 transition-all duration-300 opacity-0 pointer-events-none z-50">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">ข้อความแจ้งเตือน</span>
+    </div>
+
+    <script>
+        // User State
+        let currentUser = {
+            name: '',
+            phone: '',
+            address: '',
+            points: 100 // Starting balance
+        };
+
+        let myRequests = [];
+
+        // Check Local Storage on startup
+        window.onload = function() {
+            const savedUser = localStorage.getItem('zaleng_user_data');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+        };
+
+        // Save Address First-Time Registration
+        function saveAddress(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('inputName').value.trim();
+            currentUser.phone = document.getElementById('inputPhone').value.trim();
+            currentUser.address = document.getElementById('inputAddress').value.trim();
+
+            localStorage.setItem('zaleng_user_data', JSON.stringify(currentUser));
+            showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
+            showDashboard();
+        }
+
+        // Display Dashboard
+        function showDashboard() {
+            document.getElementById('addressScreen').classList.add('hidden');
+            document.getElementById('userDashboard').classList.remove('hidden');
+            document.getElementById('userInfoHeader').classList.remove('hidden');
+            document.getElementById('btnEditProfile').classList.remove('hidden');
+            
+            document.getElementById('displayName').innerText = currentUser.name;
+            document.getElementById('userPoints').innerText = currentUser.points;
+        }
+
+        // Toggle Sections
+        function toggleSection(sectionId) {
+            const callSection = document.getElementById('callSaleng');
+            const redeemSection = document.getElementById('redeemStore');
+            const btnCall = document.getElementById('btnCallSaleng');
+            const btnRedeem = document.getElementById('btnRedeemStore');
+
+            if (sectionId === 'callSaleng') {
+                callSection.classList.remove('hidden');
+                redeemSection.classList.add('hidden');
+
+                btnCall.className = "bg-emerald-50 border-2 border-emerald-500 text-emerald-700 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-emerald-100 active:scale-95 transition shadow-sm";
+                btnRedeem.className = "bg-gray-50 border-2 border-gray-200 text-gray-500 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-gray-100 active:scale-95 transition shadow-sm";
+            } else {
+                redeemSection.classList.remove('hidden');
+                callSection.classList.add('hidden');
+
+                btnRedeem.className = "bg-amber-50 border-2 border-amber-500 text-amber-700 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-amber-100 active:scale-95 transition shadow-sm";
+                btnCall.className = "bg-gray-50 border-2 border-gray-200 text-gray-500 p-4 rounded-xl flex flex-col items-center justify-center space-y-2 hover:bg-gray-100 active:scale-95 transition shadow-sm";
+            }
+        }
+
+        // Submit Call Request
+        function submitCall() {
+            const desc = document.getElementById('wasteDesc').value.trim();
+            const fileInput = document.getElementById('wasteImage');
+
+            if (!desc && fileInput.files.length === 0) {
+                showToast('กรุณาระบุรายละเอียดขยะหรือแนบรูปภาพ', 'error');
+                return;
+            }
+
+            const newReq = {
+                id: Date.now(),
+                desc: desc || 'มีรูปภาพขยะแนบมา',
+                time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+                status: 'รอพี่ซาเล้งตอบรับ'
+            };
+
+            myRequests.unshift(newReq);
+            renderRequests();
+
+            // Reset Form
+            document.getElementById('wasteDesc').value = '';
+            fileInput.value = '';
+
+            showToast('ส่งสัญญาณสำเร็จ! พี่ซาเล้งกำลังตรวจสอบ');
+        }
+
+        // Render Request History
+        function renderRequests() {
+            const listEl = document.getElementById('myRequestsList');
+            if (myRequests.length === 0) return;
+
+            listEl.innerHTML = myRequests.map(req => `
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-200 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-gray-800 text-xs">${req.desc}</p>
+                        <p class="text-[10px] text-gray-400">เวลา ${req.time} น.</p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse">
+                        ${req.status}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Redeem Item
+        function redeem(itemName, cost) {
+            if (currentUser.points >= cost) {
+                currentUser.points -= cost;
+                document.getElementById('userPoints').innerText = currentUser.points;
+                localStorage.setItem('zaleng_user_data', JSON.stringify(currentUser));
+                showToast(`แลกรับ "${itemName}" สำเร็จ!`);
+            } else {
+                showToast('แต้มสะสมของคุณไม่พอสำหรับการแลก', 'error');
+            }
+        }
+
+        // Edit Profile
+        function editProfile() {
+            document.getElementById('inputName').value = currentUser.name;
+            document.getElementById('inputPhone').value = currentUser.phone;
+            document.getElementById('inputAddress').value = currentUser.address;
+
+            document.getElementById('userDashboard').classList.add('hidden');
+            document.getElementById('addressScreen').classList.remove('hidden');
+        }
+
+        // Custom Toast Notification
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            }
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
